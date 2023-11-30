@@ -1,9 +1,10 @@
-import { defineBlock } from '@frontify/guideline-blocks-settings';
+import 'tailwindcss/tailwind.css';
 
-import { AnExampleBlock } from './Block';
+import { defineBlock } from '@frontify/guideline-blocks-settings';
+import { TextImageBlock } from './TextImageBlock';
 import { settings } from './settings';
 
 export default defineBlock({
-    block: AnExampleBlock,
+    block: TextImageBlock,
     settings,
 });
