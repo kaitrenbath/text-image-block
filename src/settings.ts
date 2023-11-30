@@ -1,28 +1,25 @@
 import { IconEnum, defineSettings } from '@frontify/guideline-blocks-settings';
+import { Orientation } from './types';
 
 export const settings = defineSettings({
     main: [
         {
-            id: 'main-dropdown',
+            id: 'orientation',
             type: 'dropdown',
-            defaultValue: 'content_block',
+            defaultValue: Orientation.TextImage,
             size: 'large',
-            disabled: true,
             choices: [
                 {
-                    value: 'content_block',
-                    icon: IconEnum.BuildingBlock,
-                    label: 'Content Block',
+                    value: Orientation.TextImage,
+                    icon: IconEnum.MediaObjectTextLeft,
+                    label: 'Text / Image',
+                },
+                {
+                    value: Orientation.ImageText,
+                    icon: IconEnum.MediaObjectTextRight,
+                    label: 'Image / Text',
                 },
             ],
-        },
-    ],
-    style: [
-        {
-            id: 'color',
-            label: 'Text Color',
-            type: 'colorInput',
-            defaultValue: { red: 113, green: 89, blue: 215, alpha: 1, name: 'Frontify Violet' },
         },
     ],
 });
