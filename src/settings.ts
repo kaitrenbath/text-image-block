@@ -3,6 +3,7 @@ import { Orientation } from './types';
 
 export const IMAGE_ID = 'imageAsset';
 export const PLACEHOLDER = 'Write some content here...';
+export const ALLOWED_EXTENSIONS = [...FileExtensionSets.Images];
 
 export const settings = defineSettings({
     main: [
@@ -35,7 +36,7 @@ export const settings = defineSettings({
                     id: IMAGE_ID,
                     type: 'assetInput',
                     size: 'small',
-                    extensions: [...FileExtensionSets.Images],
+                    extensions: ALLOWED_EXTENSIONS,
                 },
             ],
         },

@@ -1,6 +1,6 @@
 import { joinClassNames } from '@frontify/guideline-blocks-settings';
 import { ReactElement, ReactNode } from 'react';
-import { Orientation } from '../../types';
+import { Orientation } from '../types';
 
 type Props = {
     children: ReactNode;
