@@ -1,6 +1,8 @@
 import { IconEnum, defineSettings } from '@frontify/guideline-blocks-settings';
 import { Orientation } from './types';
 
+export const PLACEHOLDER = 'Write some content here...';
+
 export const settings = defineSettings({
     main: [
         {
