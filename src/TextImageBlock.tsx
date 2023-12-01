@@ -11,7 +11,7 @@ import { BlockProps, RichTextEditor } from '@frontify/guideline-blocks-settings'
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { Image, ImageEditor, OrientationContainer } from './components';
-import { ALLOWED_EXTENSIONS, IMAGE_ID, PLACEHOLDER } from './settings';
+import { ALLOWED_EXTENSIONS, IMAGE_ID, PLACEHOLDER, paddingValues } from './settings';
 import { Settings } from './types';
 
 export const TextImageBlock = ({ appBridge }: BlockProps) => {
@@ -26,7 +26,7 @@ export const TextImageBlock = ({ appBridge }: BlockProps) => {
     });
     const isEditing = useEditorState(appBridge);
     const image = blockAssets?.[IMAGE_ID]?.[0];
-    const { content, orientation } = blockSettings;
+    const { animationSpeed, content, paddingChoice, orientation } = blockSettings;
 
     const [isUploading, setIsUploading] = useState<boolean>(false);
     const [isImageLoading, setIsImageLoading] = useState<boolean>(false);
@@ -88,12 +88,15 @@ export const TextImageBlock = ({ appBridge }: BlockProps) => {
     return (
         <div id={appBridge.context('blockId').get().toString()} className="text-image-block">
             <OrientationContainer orientation={orientation}>
-                <div className="tw-w-full tw-py-4">
+                <div
+                    className="tw-w-full tw-py-4"
+                    style={{ paddingLeft: paddingValues[paddingChoice], paddingRight: paddingValues[paddingChoice] }}
+                >
                     <motion.div
                         initial={{ y: 30, opacity: 0 }}
                         whileInView={{ y: 0, opacity: 1 }}
                         viewport={{ once: true }}
-                        transition={{ duration: 1 }}
+                        transition={{ duration: animationSpeed }}
                     >
                         <RichTextEditor
                             isEditing={isEditing}
@@ -103,12 +106,15 @@ export const TextImageBlock = ({ appBridge }: BlockProps) => {
                         />
                     </motion.div>
                 </div>
-                <div className="tw-w-full">
+                <div
+                    className="tw-w-full"
+                    style={{ paddingLeft: paddingValues[paddingChoice], paddingRight: paddingValues[paddingChoice] }}
+                >
                     <motion.div
                         initial={{ y: 30, opacity: 0 }}
                         whileInView={{ y: 0, opacity: 1 }}
                         viewport={{ once: true }}
-                        transition={{ duration: 1 }}
+                        transition={{ duration: animationSpeed }}
                     >
                         <Image src={image?.genericUrl} alt={image?.title} />
                     </motion.div>
