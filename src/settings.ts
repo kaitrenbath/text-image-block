@@ -1,6 +1,7 @@
-import { IconEnum, defineSettings } from '@frontify/guideline-blocks-settings';
+import { FileExtensionSets, IconEnum, defineSettings } from '@frontify/guideline-blocks-settings';
 import { Orientation } from './types';
 
+export const IMAGE_ID = 'imageAsset';
 export const PLACEHOLDER = 'Write some content here...';
 
 export const settings = defineSettings({
@@ -20,6 +21,21 @@ export const settings = defineSettings({
                     value: Orientation.ImageText,
                     icon: IconEnum.MediaObjectTextRight,
                     label: 'Image / Text',
+                },
+            ],
+        },
+    ],
+    basics: [
+        {
+            id: 'imageSection',
+            type: 'sectionHeading',
+            label: 'Image',
+            blocks: [
+                {
+                    id: IMAGE_ID,
+                    type: 'assetInput',
+                    size: 'small',
+                    extensions: [...FileExtensionSets.Images],
                 },
             ],
         },

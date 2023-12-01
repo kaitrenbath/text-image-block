@@ -2,7 +2,7 @@ import { useAssetUpload, useBlockAssets, useBlockSettings, useEditorState, useFi
 import { BlockProps, RichTextEditor } from '@frontify/guideline-blocks-settings';
 import { useEffect, useState } from 'react';
 import { ImageEditor, OrientationContainer } from './components';
-import { PLACEHOLDER } from './settings';
+import { IMAGE_ID, PLACEHOLDER } from './settings';
 import { Settings } from './types';
 
 export const TextImageBlock = ({ appBridge }: BlockProps) => {
@@ -16,11 +16,10 @@ export const TextImageBlock = ({ appBridge }: BlockProps) => {
     const [isImageLoading, setIsImageLoading] = useState<boolean>(false);
     const [, setIsImageLoaded] = useState<boolean>(false);
 
-    const { imageAsset } = blockAssets;
     const { content, orientation } = blockSettings;
 
-    const imageTitle = imageAsset ? imageAsset[0].title : '';
-    const imagePreviewUrl = imageAsset ? imageAsset[0].previewUrl : '';
+    const imageTitle = blockAssets[IMAGE_ID] ? blockAssets[IMAGE_ID][0].title : '';
+    const imagePreviewUrl = blockAssets[IMAGE_ID] ? blockAssets[IMAGE_ID][0].previewUrl : '';
 
     const onFileDialogUpload = () => {
         setIsUploading(true);
@@ -54,7 +53,7 @@ export const TextImageBlock = ({ appBridge }: BlockProps) => {
         if (doneAll && uploadResults && isUploading) {
             (async (uploadResults) => {
                 const resultId = uploadResults[0].id;
-                await updateAssetIdsFromKey('imageAsset', [resultId]);
+                await updateAssetIdsFromKey(IMAGE_ID, [resultId]);
             })(uploadResults);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -64,7 +63,7 @@ export const TextImageBlock = ({ appBridge }: BlockProps) => {
         return (
             <div id={appBridge.context('blockId').get().toString()}>
                 <OrientationContainer orientation={orientation}>
-                    <div className="tw-py-10 tw-w-full tw-bg-red-300">
+                    <div className="tw-py-4 tw-w-full">
                         <RichTextEditor
                             isEditing={isEditing}
                             placeholder={PLACEHOLDER}
