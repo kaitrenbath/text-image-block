@@ -99,7 +99,7 @@ export const settings = defineSettings({
                     id: SPEED_ID,
                     type: 'dropdown',
                     size: 'small',
-                    defaultValue: AnimationStagger.Fast,
+                    defaultValue: animationSpeedValues[AnimationSpeed.Medium],
                     choices: [
                         {
                             label: AnimationSpeed.Fast,
@@ -126,7 +126,7 @@ export const settings = defineSettings({
                     id: STAGGER_ID,
                     type: 'dropdown',
                     size: 'small',
-                    defaultValue: AnimationStagger.None,
+                    defaultValue: animationStaggerValues[AnimationStagger.Fast],
                     choices: [
                         {
                             label: AnimationStagger.None,
