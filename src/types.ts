@@ -1,5 +1,6 @@
 export type Settings = {
     animationSpeed: AnimationSpeed;
+    animationStaggering: AnimationStagger;
     orientation: Orientation;
     paddingChoice: Padding;
     content?: string;
@@ -15,6 +16,13 @@ export enum Padding {
     Small = 'Small',
     Medium = 'Medium',
     Large = 'Large',
+}
+
+export enum AnimationStagger {
+    None = 0,
+    Slow = 0.15,
+    Medium = 0.4,
+    Fast = 0.7,
 }
 
 export enum AnimationSpeed {

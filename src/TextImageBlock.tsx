@@ -7,12 +7,12 @@ import {
     useEditorState,
     useFileInput,
 } from '@frontify/app-bridge';
-import { BlockProps, RichTextEditor } from '@frontify/guideline-blocks-settings';
+import { BlockProps, RichTextEditor, joinClassNames } from '@frontify/guideline-blocks-settings';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { Image, ImageEditor, OrientationContainer } from './components';
+import { Image, ImageEditor } from './components';
 import { ALLOWED_EXTENSIONS, IMAGE_ID, PLACEHOLDER, paddingValues } from './settings';
-import { Settings } from './types';
+import { Orientation, Settings } from './types';
 
 export const TextImageBlock = ({ appBridge }: BlockProps) => {
     const [blockSettings, setBlockSettings] = useBlockSettings<Settings>(appBridge);
@@ -26,7 +26,7 @@ export const TextImageBlock = ({ appBridge }: BlockProps) => {
     });
     const isEditing = useEditorState(appBridge);
     const image = blockAssets?.[IMAGE_ID]?.[0];
-    const { animationSpeed, content, paddingChoice, orientation } = blockSettings;
+    const { animationSpeed, animationStaggering, content, paddingChoice, orientation } = blockSettings;
 
     const [isUploading, setIsUploading] = useState<boolean>(false);
     const [isImageLoading, setIsImageLoading] = useState<boolean>(false);
@@ -44,6 +44,34 @@ export const TextImageBlock = ({ appBridge }: BlockProps) => {
     };
 
     const updateContent = (content: string) => setBlockSettings({ content });
+
+    const container = {
+        hidden: {
+            transition: {
+                type: false,
+            },
+        },
+        show: {
+            transition: {
+                staggerChildren: animationStaggering,
+                staggerDirection: orientation === Orientation.TextImage ? 1 : -1,
+            },
+        },
+    };
+
+    const item = {
+        hidden: {
+            opacity: 0,
+            y: 30,
+        },
+        show: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                duration: animationSpeed,
+            },
+        },
+    };
 
     useEffect(() => {
         if (selectedFiles) {
@@ -63,8 +91,19 @@ export const TextImageBlock = ({ appBridge }: BlockProps) => {
     if (isEditing) {
         return (
             <div id={appBridge.context('blockId').get().toString()}>
-                <OrientationContainer orientation={orientation}>
-                    <div className="tw-w-full tw-flex-1 tw-py-4">
+                <div
+                    className={joinClassNames([
+                        'tw-flex tw-gap-x-4',
+                        orientation === Orientation.TextImage ? 'tw-flex-row' : 'tw-flex-row-reverse',
+                    ])}
+                >
+                    <div
+                        className="tw-w-full tw-flex-1 tw-py-4"
+                        style={{
+                            paddingLeft: paddingValues[paddingChoice],
+                            paddingRight: paddingValues[paddingChoice],
+                        }}
+                    >
                         <RichTextEditor
                             isEditing={isEditing}
                             placeholder={PLACEHOLDER}
@@ -72,7 +111,13 @@ export const TextImageBlock = ({ appBridge }: BlockProps) => {
                             onTextChange={updateContent}
                         />
                     </div>
-                    <div className="tw-w-full tw-flex-1">
+                    <div
+                        className="tw-w-full tw-flex-1"
+                        style={{
+                            paddingLeft: paddingValues[paddingChoice],
+                            paddingRight: paddingValues[paddingChoice],
+                        }}
+                    >
                         <ImageEditor
                             onUploadClicked={onFileDialogUpload}
                             onDelete={removeAsset}
@@ -80,46 +125,50 @@ export const TextImageBlock = ({ appBridge }: BlockProps) => {
                             isLoading={isImageLoading}
                         />
                     </div>
-                </OrientationContainer>
+                </div>
             </div>
         );
     }
 
     return (
         <div id={appBridge.context('blockId').get().toString()} className="text-image-block">
-            <OrientationContainer orientation={orientation}>
-                <div
-                    className="tw-w-full tw-py-4"
-                    style={{ paddingLeft: paddingValues[paddingChoice], paddingRight: paddingValues[paddingChoice] }}
+            <motion.div
+                variants={container}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true }}
+                className={joinClassNames([
+                    'tw-flex tw-gap-x-4',
+                    orientation === Orientation.TextImage ? 'tw-flex-row' : 'tw-flex-row-reverse',
+                ])}
+            >
+                <motion.div
+                    variants={item}
+                    className="tw-w-full tw-flex-1"
+                    style={{
+                        paddingLeft: paddingValues[paddingChoice],
+                        paddingRight: paddingValues[paddingChoice],
+                    }}
                 >
-                    <motion.div
-                        initial={{ y: 30, opacity: 0 }}
-                        whileInView={{ y: 0, opacity: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: animationSpeed }}
-                    >
-                        <RichTextEditor
-                            isEditing={isEditing}
-                            placeholder={PLACEHOLDER}
-                            value={content}
-                            onTextChange={updateContent}
-                        />
-                    </motion.div>
-                </div>
-                <div
-                    className="tw-w-full"
-                    style={{ paddingLeft: paddingValues[paddingChoice], paddingRight: paddingValues[paddingChoice] }}
+                    <RichTextEditor
+                        isEditing={isEditing}
+                        placeholder={PLACEHOLDER}
+                        value={content}
+                        onTextChange={updateContent}
+                    />
+                </motion.div>
+
+                <motion.div
+                    variants={item}
+                    className="tw-w-full tw-flex-1"
+                    style={{
+                        paddingLeft: paddingValues[paddingChoice],
+                        paddingRight: paddingValues[paddingChoice],
+                    }}
                 >
-                    <motion.div
-                        initial={{ y: 30, opacity: 0 }}
-                        whileInView={{ y: 0, opacity: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: animationSpeed }}
-                    >
-                        <Image src={image?.genericUrl} alt={image?.title} />
-                    </motion.div>
-                </div>
-            </OrientationContainer>
+                    <Image src={image?.genericUrl} alt={image?.title} />
+                </motion.div>
+            </motion.div>
         </div>
     );
 };

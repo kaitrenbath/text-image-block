@@ -1,8 +1,9 @@
 import { FileExtensionSets, IconEnum, defineSettings } from '@frontify/guideline-blocks-settings';
-import { AnimationSpeed, Orientation, Padding } from './types';
+import { AnimationSpeed, AnimationStagger, Orientation, Padding } from './types';
 
 const PADDING_CHOICE_ID = 'paddingChoice';
 const SPEED_ID = 'animationSpeed';
+const STAGGER_ID = 'animationStaggering';
 export const IMAGE_ID = 'imageAsset';
 export const PLACEHOLDER = 'Write some content here...';
 export const ALLOWED_EXTENSIONS = [...FileExtensionSets.Images];
@@ -14,10 +15,17 @@ export const paddingValues: Record<Padding, string> = {
     [Padding.Large]: '5vw',
 };
 
+export const staggerValues: Record<AnimationStagger, number> = {
+    [AnimationStagger.None]: 0,
+    [AnimationStagger.Fast]: 0.15,
+    [AnimationStagger.Medium]: 0.4,
+    [AnimationStagger.Slow]: 0.75,
+};
+
 export const animationSpeedValues: Record<AnimationSpeed, number> = {
-    [AnimationSpeed.Slow]: 1,
-    [AnimationSpeed.Medium]: 0.6,
     [AnimationSpeed.Fast]: 0.3,
+    [AnimationSpeed.Medium]: 0.6,
+    [AnimationSpeed.Slow]: 1,
 };
 
 export const settings = defineSettings({
@@ -91,18 +99,50 @@ export const settings = defineSettings({
                     id: SPEED_ID,
                     type: 'dropdown',
                     size: 'small',
+                    defaultValue: AnimationStagger.Fast,
                     choices: [
                         {
-                            label: AnimationSpeed.Slow,
-                            value: animationSpeedValues[AnimationSpeed.Slow],
+                            label: AnimationSpeed.Fast,
+                            value: animationSpeedValues[AnimationSpeed.Fast],
                         },
                         {
                             label: AnimationSpeed.Medium,
                             value: animationSpeedValues[AnimationSpeed.Medium],
                         },
                         {
-                            label: AnimationSpeed.Fast,
-                            value: animationSpeedValues[AnimationSpeed.Fast],
+                            label: AnimationSpeed.Slow,
+                            value: animationSpeedValues[AnimationSpeed.Slow],
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            id: 'staggerSection',
+            type: 'sectionHeading',
+            label: 'Staggering',
+            blocks: [
+                {
+                    id: STAGGER_ID,
+                    type: 'dropdown',
+                    size: 'small',
+                    defaultValue: AnimationStagger.None,
+                    choices: [
+                        {
+                            label: AnimationStagger.None,
+                            value: staggerValues[AnimationStagger.None],
+                        },
+                        {
+                            label: AnimationStagger.Fast,
+                            value: staggerValues[AnimationStagger.Fast],
+                        },
+                        {
+                            label: AnimationStagger.Medium,
+                            value: staggerValues[AnimationStagger.Medium],
+                        },
+                        {
+                            label: AnimationStagger.Slow,
+                            value: staggerValues[AnimationStagger.Slow],
                         },
                     ],
                 },
