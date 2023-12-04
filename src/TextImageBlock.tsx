@@ -13,6 +13,7 @@ import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { Image, ImageEditor } from './components';
 import { ALLOWED_EXTENSIONS, IMAGE_ID, PLACEHOLDER, paddingValues } from './settings';
+import { getPlugins } from './plugins';
 import { Orientation, Settings } from './types';
 
 export const TextImageBlock = ({ appBridge }: BlockProps) => {
@@ -123,6 +124,7 @@ export const TextImageBlock = ({ appBridge }: BlockProps) => {
                         <RichTextEditor
                             isEditing={isEditing}
                             placeholder={PLACEHOLDER}
+                            plugins={getPlugins()}
                             value={content}
                             onTextChange={updateContent}
                         />
@@ -171,6 +173,7 @@ export const TextImageBlock = ({ appBridge }: BlockProps) => {
                     <RichTextEditor
                         isEditing={isEditing}
                         placeholder={PLACEHOLDER}
+                        plugins={getPlugins()}
                         value={content}
                         onTextChange={updateContent}
                     />
