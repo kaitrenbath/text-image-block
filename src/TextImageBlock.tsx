@@ -1,6 +1,7 @@
 import {
     Asset,
     getMimeType,
+    useAssetChooser,
     useAssetUpload,
     useBlockAssets,
     useBlockSettings,
@@ -15,11 +16,9 @@ import { ALLOWED_EXTENSIONS, IMAGE_ID, PLACEHOLDER, paddingValues } from './sett
 import { Orientation, Settings } from './types';
 
 export const TextImageBlock = ({ appBridge }: BlockProps) => {
-    const [blockSettings, setBlockSettings] = useBlockSettings<Settings>(appBridge);
-    const [uploadFile, { results: uploadResults, doneAll }] = useAssetUpload({
-        onUploadProgress: () => !isImageLoading && setIsUploading(true),
-    });
+    const { openAssetChooser, closeAssetChooser } = useAssetChooser(appBridge);
     const { blockAssets, deleteAssetIdsFromKey, updateAssetIdsFromKey } = useBlockAssets(appBridge);
+    const [blockSettings, setBlockSettings] = useBlockSettings<Settings>(appBridge);
     const [openFileDialog, { selectedFiles }] = useFileInput({
         accept: getMimeType(ALLOWED_EXTENSIONS).join(','),
         multiple: false,
@@ -27,24 +26,6 @@ export const TextImageBlock = ({ appBridge }: BlockProps) => {
     const isEditing = useEditorState(appBridge);
     const image = blockAssets?.[IMAGE_ID]?.[0];
     const { animationSpeed, animationStaggering, content, paddingChoice, orientation } = blockSettings;
-
-    const [isUploading, setIsUploading] = useState<boolean>(false);
-    const [isImageLoading, setIsImageLoading] = useState<boolean>(false);
-
-    const onFileDialogUpload = () => {
-        openFileDialog();
-    };
-
-    const updateAsset = async (asset: Asset) => {
-        await updateAssetIdsFromKey(IMAGE_ID, [asset.id]);
-    };
-
-    const removeAsset = async () => {
-        await deleteAssetIdsFromKey(IMAGE_ID, [image?.id]);
-    };
-
-    const updateContent = (content: string) => setBlockSettings({ content });
-
     const container = {
         hidden: {
             transition: {
@@ -58,7 +39,6 @@ export const TextImageBlock = ({ appBridge }: BlockProps) => {
             },
         },
     };
-
     const item = {
         hidden: {
             opacity: 0,
@@ -73,16 +53,52 @@ export const TextImageBlock = ({ appBridge }: BlockProps) => {
         },
     };
 
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    const [uploadFile, { results: uploadResults, doneAll }] = useAssetUpload({
+        onUploadProgress: () => !isLoading && setIsLoading(true),
+    });
+
+    const updateAsset = async (asset: Asset) => {
+        await updateAssetIdsFromKey(IMAGE_ID, [asset.id]);
+        setIsLoading(false);
+    };
+
+    const onOpenAssetChooser = () => {
+        openAssetChooser(
+            async (result) => {
+                setIsLoading(true);
+                updateAsset(result[0]);
+                closeAssetChooser();
+            },
+            {
+                selectedValueId: image?.id,
+                extensions: ALLOWED_EXTENSIONS,
+            },
+        );
+    };
+
+    const onFilesDrop = (files: FileList) => {
+        setIsLoading(true);
+        uploadFile(files[0]);
+    };
+
+    const removeAsset = async () => {
+        await deleteAssetIdsFromKey(IMAGE_ID, [image?.id]);
+    };
+
+    const updateContent = (content: string) => setBlockSettings({ content });
+
     useEffect(() => {
         if (selectedFiles) {
-            setIsImageLoading(true);
+            setIsLoading(true);
             uploadFile(selectedFiles);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedFiles]);
 
     useEffect(() => {
-        if (doneAll && uploadResults && isUploading) {
+        if (doneAll && uploadResults && isLoading) {
             updateAsset(uploadResults[0]);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -119,10 +135,12 @@ export const TextImageBlock = ({ appBridge }: BlockProps) => {
                         }}
                     >
                         <ImageEditor
-                            onUploadClicked={onFileDialogUpload}
                             onDelete={removeAsset}
+                            onDrop={onFilesDrop}
+                            onReplaceWithAssetClicked={onOpenAssetChooser}
+                            onUploadClicked={openFileDialog}
                             image={image}
-                            isLoading={isImageLoading}
+                            isLoading={isLoading}
                         />
                     </div>
                 </div>

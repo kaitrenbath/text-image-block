@@ -23,9 +23,9 @@ export const animationSpeedValues: Record<AnimationSpeed, number> = {
 
 export const animationStaggerValues: Record<AnimationStagger, number> = {
     [AnimationStagger.None]: 0,
-    [AnimationStagger.Slow]: 0.15,
+    [AnimationStagger.Fast]: 0.15,
     [AnimationStagger.Medium]: 0.4,
-    [AnimationStagger.Fast]: 0.7,
+    [AnimationStagger.Slow]: 0.7,
 };
 
 export const settings = defineSettings({
@@ -126,6 +126,7 @@ export const settings = defineSettings({
                     id: STAGGER_ID,
                     type: 'dropdown',
                     size: 'small',
+                    defaultValue: AnimationStagger.None,
                     choices: [
                         {
                             label: AnimationStagger.None,
