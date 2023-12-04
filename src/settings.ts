@@ -15,17 +15,17 @@ export const paddingValues: Record<Padding, string> = {
     [Padding.Large]: '5vw',
 };
 
-export const staggerValues: Record<AnimationStagger, number> = {
-    [AnimationStagger.None]: 0,
-    [AnimationStagger.Fast]: 0.15,
-    [AnimationStagger.Medium]: 0.4,
-    [AnimationStagger.Slow]: 0.75,
-};
-
 export const animationSpeedValues: Record<AnimationSpeed, number> = {
     [AnimationSpeed.Fast]: 0.3,
     [AnimationSpeed.Medium]: 0.6,
     [AnimationSpeed.Slow]: 1,
+};
+
+export const animationStaggerValues: Record<AnimationStagger, number> = {
+    [AnimationStagger.None]: 0,
+    [AnimationStagger.Slow]: 0.15,
+    [AnimationStagger.Medium]: 0.4,
+    [AnimationStagger.Fast]: 0.7,
 };
 
 export const settings = defineSettings({
@@ -126,23 +126,22 @@ export const settings = defineSettings({
                     id: STAGGER_ID,
                     type: 'dropdown',
                     size: 'small',
-                    defaultValue: AnimationStagger.None,
                     choices: [
                         {
                             label: AnimationStagger.None,
-                            value: staggerValues[AnimationStagger.None],
+                            value: animationStaggerValues[AnimationStagger.None],
                         },
                         {
                             label: AnimationStagger.Fast,
-                            value: staggerValues[AnimationStagger.Fast],
+                            value: animationStaggerValues[AnimationStagger.Fast],
                         },
                         {
                             label: AnimationStagger.Medium,
-                            value: staggerValues[AnimationStagger.Medium],
+                            value: animationStaggerValues[AnimationStagger.Medium],
                         },
                         {
                             label: AnimationStagger.Slow,
-                            value: staggerValues[AnimationStagger.Slow],
+                            value: animationStaggerValues[AnimationStagger.Slow],
                         },
                     ],
                 },
