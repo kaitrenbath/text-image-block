@@ -69,6 +69,7 @@ export const settings = defineSettings({
             id: PADDING_CHOICE_ID,
             type: 'segmentedControls',
             defaultValue: Padding.Small,
+            label: 'Padding',
             choices: [
                 {
                     value: Padding.None,
