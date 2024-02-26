@@ -89,7 +89,7 @@ const ImageWrapper = ({ appBridge, isLoading, setIsLoading }: Props) => {
     }, [image, isLoading]);
 
     return (
-        <div>
+        <div className="tw-h-full">
             {isEditing ? (
                 <ImageEditor
                     alignment={alignment}

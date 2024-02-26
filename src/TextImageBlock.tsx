@@ -1,7 +1,7 @@
 import { BlockProps, RichTextEditor, joinClassNames } from '@frontify/guideline-blocks-settings';
 import { useBlockSettings, useEditorState } from '@frontify/app-bridge';
 import { motion, useInView } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { Orientation, PLACEHOLDER } from './constants';
 import { getPlugins } from './helpers';
