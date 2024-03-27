@@ -1,7 +1,7 @@
 import { BlockProps, RichTextEditor, joinClassNames } from '@frontify/guideline-blocks-settings';
 import { useBlockSettings, useEditorState } from '@frontify/app-bridge';
 import { motion, useInView } from 'framer-motion';
-import { useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { Orientation, PLACEHOLDER } from './constants';
 import { getPlugins } from './helpers';
@@ -13,6 +13,7 @@ export const TextImageBlock = ({ appBridge }: BlockProps) => {
     const isEditing = useEditorState(appBridge);
     const { animationSpeed, animationStaggering, content, paddingChoice, orientation, ratio } = blockSettings;
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const plugins = useMemo(() => getPlugins(appBridge), [appBridge]);
 
     const containerRef = useRef(null);
     const isInView = useInView(containerRef, {
@@ -22,7 +23,7 @@ export const TextImageBlock = ({ appBridge }: BlockProps) => {
 
     const shouldAnimate = !isLoading && isInView ? 'show' : 'hidden';
 
-    const updateContent = (content: string) => setBlockSettings({ content });
+    const updateContent = useCallback((content: string) => setBlockSettings({ content }), [setBlockSettings]);
 
     const container = {
         hidden: {
@@ -74,7 +75,7 @@ export const TextImageBlock = ({ appBridge }: BlockProps) => {
                     <RichTextEditor
                         isEditing={isEditing}
                         placeholder={PLACEHOLDER}
-                        plugins={getPlugins()}
+                        plugins={plugins}
                         value={content}
                         onTextChange={updateContent}
                     />

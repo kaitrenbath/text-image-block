@@ -60,7 +60,7 @@ const ImageEditor = ({
                     <Image src={image?.previewUrl} alt={image?.title} />
                 </div>
             ) : (
-                <div className="tw-h-full">
+                <div className="tw-h-full tw-min-h-[120px]">
                     <BlockInjectButton
                         label="Add or drop image here"
                         fillParentContainer={true}

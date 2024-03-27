@@ -5,5 +5,6 @@
             "type": "fondueRte",
             "settingId": "content"
         }
-    ]
+    ],
+    "i18nFields": ["imageAsset"]
 }

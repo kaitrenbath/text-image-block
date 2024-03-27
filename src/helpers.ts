@@ -1,3 +1,4 @@
+import { AppBridgeBlock } from '@frontify/app-bridge';
 import {
     AlignCenterPlugin,
     AlignJustifyPlugin,
@@ -5,7 +6,6 @@ import {
     AlignRightPlugin,
     BoldPlugin,
     ItalicPlugin,
-    LinkPlugin,
     OrderedListPlugin,
     PluginComposer,
     ResetFormattingPlugin,
@@ -14,9 +14,9 @@ import {
     UnderlinePlugin,
     UnorderedListPlugin,
 } from '@frontify/fondue';
-import { TextStylePluginsWithoutImage, TextStylesWithoutImage } from '@frontify/guideline-blocks-settings';
+import { LinkPlugin, TextStylePluginsWithoutImage, TextStylesWithoutImage } from '@frontify/guideline-blocks-settings';
 
-export const getPlugins = () => {
+export const getPlugins = (appBridge: AppBridgeBlock) => {
     const plugins = new PluginComposer();
 
     plugins.setPlugin([
@@ -29,7 +29,7 @@ export const getPlugins = () => {
         new ItalicPlugin(),
         new UnderlinePlugin(),
         new StrikethroughPlugin(),
-        new LinkPlugin(),
+        new LinkPlugin({ appBridge }),
     ]);
     plugins.setPlugin([
         new AlignLeftPlugin({

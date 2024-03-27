@@ -59,6 +59,7 @@ export const settings = defineSettings({
                     type: 'assetInput',
                     size: 'small',
                     extensions: ALLOWED_EXTENSIONS,
+                    showForTranslations: true,
                 },
             ],
         },
