@@ -10,41 +10,16 @@ import { ImageWrapper } from './components';
 
 export const TextImageBlock = ({ appBridge }: BlockProps) => {
     const [blockSettings, setBlockSettings] = useBlockSettings<Settings>(appBridge);
-    const isEditing = useEditorState(appBridge);
     const { animationSpeed, animationStaggering, content, paddingChoice, orientation, ratio } = blockSettings;
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const plugins = useMemo(() => getPlugins(appBridge), [appBridge]);
-    const [isInView, setIsInView] = useState(false);
-
     const containerRef = useRef(null);
-
-    useEffect(() => {
-        const { current } = containerRef;
-        const onIntersect = ([entry]: IntersectionObserverEntry[], observer: IntersectionObserver) => {
-            setTimeout(() => {
-                if (entry.isIntersecting) {
-                    setIsInView(true);
-                    observer.unobserve(entry.target);
-                }
-            }, 200);
-        };
-        const observer = new IntersectionObserver(onIntersect, { root: null, rootMargin: '0px', threshold: 1.0 });
-
-        if (current && !isLoading) {
-            observer.observe(current);
-        }
-
-        return () => {
-            if (current) {
-                observer.disconnect();
-            }
-        };
-    }, [containerRef, isLoading]);
-
-    const shouldAnimate = !isLoading && isInView ? 'show' : 'hidden';
+    const isEditing = useEditorState(appBridge);
+    const plugins = useMemo(() => getPlugins(appBridge), [appBridge]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isInView, setIsInView] = useState(false);
 
     const updateContent = useCallback((content: string) => setBlockSettings({ content }), [setBlockSettings]);
 
+    const shouldAnimate = !isLoading && isInView ? 'show' : 'hidden';
     const container = {
         hidden: {
             transition: {
@@ -71,6 +46,29 @@ export const TextImageBlock = ({ appBridge }: BlockProps) => {
             },
         },
     };
+
+    useEffect(() => {
+        const { current } = containerRef;
+        const onIntersect = ([entry]: IntersectionObserverEntry[], observer: IntersectionObserver) => {
+            setTimeout(() => {
+                if (entry.isIntersecting) {
+                    setIsInView(true);
+                    observer.unobserve(entry.target);
+                }
+            }, 200);
+        };
+        const observer = new IntersectionObserver(onIntersect, { root: null, rootMargin: '0px', threshold: 1.0 });
+
+        if (current && !isLoading) {
+            observer.observe(current);
+        }
+
+        return () => {
+            if (current) {
+                observer.disconnect();
+            }
+        };
+    }, [containerRef, isLoading]);
 
     return (
         <div id={appBridge.context('blockId').get().toString()} className="text-image-block">
