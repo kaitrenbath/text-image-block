@@ -1,7 +1,7 @@
 import { BlockProps, RichTextEditor, joinClassNames } from '@frontify/guideline-blocks-settings';
 import { useBlockSettings, useEditorState } from '@frontify/app-bridge';
-import { motion, useInView } from 'framer-motion';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { Orientation, PLACEHOLDER } from './constants';
 import { getPlugins } from './helpers';
@@ -14,12 +14,32 @@ export const TextImageBlock = ({ appBridge }: BlockProps) => {
     const { animationSpeed, animationStaggering, content, paddingChoice, orientation, ratio } = blockSettings;
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const plugins = useMemo(() => getPlugins(appBridge), [appBridge]);
+    const [isInView, setIsInView] = useState(false);
 
     const containerRef = useRef(null);
-    const isInView = useInView(containerRef, {
-        amount: 1,
-        once: true,
-    });
+
+    useEffect(() => {
+        const { current } = containerRef;
+        const onIntersect = ([entry]: IntersectionObserverEntry[], observer: IntersectionObserver) => {
+            setTimeout(() => {
+                if (entry.isIntersecting) {
+                    setIsInView(true);
+                    observer.unobserve(entry.target);
+                }
+            }, 200);
+        };
+        const observer = new IntersectionObserver(onIntersect, { root: null, rootMargin: '0px', threshold: 1.0 });
+
+        if (current && !isLoading) {
+            observer.observe(current);
+        }
+
+        return () => {
+            if (current) {
+                observer.disconnect();
+            }
+        };
+    }, [containerRef, isLoading]);
 
     const shouldAnimate = !isLoading && isInView ? 'show' : 'hidden';
 
