@@ -31,29 +31,33 @@ const ImageEditor = ({
         <BlockItemWrapper
             shouldFillContainer={true}
             shouldHideWrapper={!image}
-            toolbarFlyoutItems={[
-                [
-                    {
-                        title: 'Replace with upload',
-                        onClick: onUploadClicked,
-                        icon: <IconArrowCircleUp20 />,
-                    },
-                    {
-                        title: 'Replace with asset',
-                        onClick: onReplaceWithAssetClicked,
-                        icon: <IconImageStack20 />,
-                    },
-                ],
-                [
-                    {
-                        title: 'Remove asset',
-                        onClick: onDelete,
-                        style: MenuItemStyle.Danger,
-                        icon: <IconTrashBin20 />,
-                    },
-                ],
+            toolbarItems={[
+                {
+                    type: 'menu',
+                    items: [
+                        [
+                            {
+                                title: 'Replace with upload',
+                                onClick: onUploadClicked,
+                                icon: <IconArrowCircleUp20 />,
+                            },
+                            {
+                                title: 'Replace with asset',
+                                onClick: onReplaceWithAssetClicked,
+                                icon: <IconImageStack20 />,
+                            },
+                        ],
+                        [
+                            {
+                                title: 'Remove asset',
+                                onClick: onDelete,
+                                style: MenuItemStyle.Danger,
+                                icon: <IconTrashBin20 />,
+                            },
+                        ],
+                    ],
+                },
             ]}
-            toolbarItems={[]}
         >
             {image ? (
                 <div className={`tw-flex tw-w-full tw-flex-1 ${alignmentClasses[alignment]}`}>
