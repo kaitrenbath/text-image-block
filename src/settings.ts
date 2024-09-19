@@ -142,19 +142,19 @@ export const settings = defineSettings({
                     id: SPEED_ID,
                     type: 'dropdown',
                     size: 'small',
-                    defaultValue: AnimationSpeed.Medium,
+                    defaultValue: AnimationSpeed.Medium.toString(),
                     choices: [
                         {
                             label: 'Fast',
-                            value: AnimationSpeed.Fast,
+                            value: AnimationSpeed.Fast.toString(),
                         },
                         {
                             label: 'Medium',
-                            value: AnimationSpeed.Medium,
+                            value: AnimationSpeed.Medium.toString(),
                         },
                         {
                             label: 'Slow',
-                            value: AnimationSpeed.Slow,
+                            value: AnimationSpeed.Slow.toString(),
                         },
                     ],
                 },
@@ -169,23 +169,23 @@ export const settings = defineSettings({
                     id: STAGGER_ID,
                     type: 'dropdown',
                     size: 'small',
-                    defaultValue: AnimationSpeed.Fast,
+                    defaultValue: AnimationSpeed.Fast.toString(),
                     choices: [
                         {
                             label: 'None',
-                            value: AnimationStagger.None,
+                            value: AnimationStagger.None.toString(),
                         },
                         {
                             label: 'Fast',
-                            value: AnimationStagger.Fast,
+                            value: AnimationStagger.Fast.toString(),
                         },
                         {
                             label: 'Medium',
-                            value: AnimationStagger.Medium,
+                            value: AnimationStagger.Medium.toString(),
                         },
                         {
                             label: 'Slow',
-                            value: AnimationStagger.Slow,
+                            value: AnimationStagger.Slow.toString(),
                         },
                     ],
                 },
