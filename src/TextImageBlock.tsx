@@ -78,8 +78,10 @@ export const TextImageBlock = ({ appBridge }: BlockProps) => {
                 animate={isEditing ? 'show' : shouldAnimate}
                 ref={containerRef}
                 className={joinClassNames([
-                    'tw-flex tw-gap-x-4',
-                    orientation === Orientation.TextImage ? 'tw-flex-row' : 'tw-flex-row-reverse',
+                    'tw-flex tw-gap-x-4 tw-gap-y-6',
+                    orientation === Orientation.TextImage
+                        ? 'tw-flex-col md:tw-flex-row'
+                        : 'tw-flex-col-reverse md:tw-flex-row-reverse',
                 ])}
             >
                 <motion.div
