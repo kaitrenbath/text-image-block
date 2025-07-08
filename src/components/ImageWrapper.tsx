@@ -28,23 +28,23 @@ const ImageWrapper = ({ appBridge, isLoading, setIsLoading }: Props) => {
     const [blockSettings] = useBlockSettings<Settings>(appBridge);
     const { alignment } = blockSettings;
     const isEditing = useEditorState(appBridge);
+    const image = blockAssets?.[IMAGE_ID]?.[0];
+
     const [openFileDialog, { selectedFiles }] = useFileInput({
         accept: getMimeType(ALLOWED_EXTENSIONS).join(','),
         multiple: false,
     });
-    const image = blockAssets?.[IMAGE_ID]?.[0];
-
     const [uploadFile, { results: uploadResults, doneAll }] = useAssetUpload({
         onUploadProgress: () => !isLoading && setIsLoading(true),
     });
 
-    const removeAsset = async () => {
-        await deleteAssetIdsFromKey(IMAGE_ID, [image?.id]);
-    };
-
     const updateAsset = async (asset: Asset) => {
         await updateAssetIdsFromKey(IMAGE_ID, [asset.id]);
         setIsLoading(false);
+    };
+
+    const removeAsset = async () => {
+        await deleteAssetIdsFromKey(IMAGE_ID, [image?.id]);
     };
 
     const onOpenAssetChooser = () => {
@@ -69,24 +69,17 @@ const ImageWrapper = ({ appBridge, isLoading, setIsLoading }: Props) => {
     useEffect(() => {
         if (selectedFiles) {
             setIsLoading(true);
-            uploadFile(selectedFiles);
+            uploadFile(selectedFiles[0]);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedFiles]);
 
     useEffect(() => {
-        if (doneAll && uploadResults && isLoading) {
+        if (doneAll && uploadResults) {
             updateAsset(uploadResults[0]);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [doneAll, uploadResults]);
-
-    useEffect(() => {
-        if (image && isLoading) {
-            setIsLoading(false);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [image, isLoading]);
 
     return (
         <div className="tw-h-full">

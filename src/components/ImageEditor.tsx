@@ -1,5 +1,5 @@
 import { Asset } from '@frontify/app-bridge';
-import { IconArrowCircleUp20, IconImageStack20, IconTrashBin20, MenuItemStyle } from '@frontify/fondue';
+import { IconArrowCircleUp20, IconImageStack20, IconTrashBin20, LoadingCircle, MenuItemStyle } from '@frontify/fondue';
 import { BlockInjectButton, BlockItemWrapper } from '@frontify/guideline-blocks-settings';
 import { ReactElement } from 'react';
 
@@ -60,8 +60,18 @@ const ImageEditor = ({
             ]}
         >
             {image ? (
-                <div className={`tw-flex tw-w-full tw-flex-1 ${alignmentClasses[alignment]}`}>
-                    <Image src={image?.previewUrl} alt={image?.title} />
+                <div className={`tw-relative tw-flex tw-w-full tw-flex-1 ${alignmentClasses[alignment]}`}>
+                    {isLoading && (
+                        <>
+                            <span className="tw-absolute tw-inset-0 tw-bg-white tw-opacity-50"></span>
+                            <span className="tw-absolute tw-inset-0 tw-flex tw-items-center tw-justify-center">
+                                <LoadingCircle />
+                            </span>
+                        </>
+                    )}
+                    <div>
+                        <Image src={image?.previewUrl} alt={image?.title} />
+                    </div>
                 </div>
             ) : (
                 <div className="tw-h-32 md:tw-h-full md:tw-min-h-[120px]">
