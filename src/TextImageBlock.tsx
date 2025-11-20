@@ -3,7 +3,7 @@ import { useBlockSettings, useEditorState } from '@frontify/app-bridge';
 import { motion } from 'motion/react';
 import { useCallback, useMemo, useRef } from 'react';
 
-import { Orientation, PLACEHOLDER } from './constants';
+import { Direction, Orientation, PLACEHOLDER } from './constants';
 import { getPlugins } from './helpers';
 import { Settings } from './settings';
 import { ImageWrapper } from './components';
@@ -14,7 +14,8 @@ export const TextImageBlock = ({ appBridge }: BlockProps) => {
     const plugins = useMemo(() => getPlugins(appBridge), [appBridge]);
     const textRef = useRef(null);
     const imageRef = useRef(null);
-    const { animationSpeed, animationStaggering, content, paddingChoice, orientation, ratio } = blockSettings;
+    const { animationSpeed, animationStaggering, content, direction, paddingChoice, orientation, ratio } =
+        blockSettings;
     const blockId = String(appBridge.context('blockId').get());
     const shouldAnimate = !isEditing;
 
@@ -64,7 +65,12 @@ export const TextImageBlock = ({ appBridge }: BlockProps) => {
 
     return (
         <div id={blockId} className="text-image-block">
-            <div className="tw-flex tw-gap-x-4 tw-gap-y-6 tw-flex-col md:tw-flex-row">
+            <div
+                className={joinClassNames([
+                    'tw-flex tw-flex-col tw-gap-x-4 tw-gap-y-6',
+                    direction === Direction.Horizontal ? 'tw-flex-col md:tw-flex-row' : 'tw-flex-col',
+                ])}
+            >
                 <div
                     className="tw-w-full tw-flex-1"
                     style={{
@@ -80,7 +86,10 @@ export const TextImageBlock = ({ appBridge }: BlockProps) => {
                 </div>
                 {(orientation === Orientation.TextImage || orientation === Orientation.ImageText) && (
                     <div
-                        className={joinClassNames(['tw-w-full tw-flex-1', ratio])}
+                        className={joinClassNames([
+                            'tw-w-full',
+                            direction === Direction.Horizontal ? ratio : undefined,
+                        ])}
                         style={{
                             paddingLeft: paddingChoice,
                             paddingRight: paddingChoice,
