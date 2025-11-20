@@ -10,7 +10,7 @@ import {
     useFileInput,
 } from '@frontify/app-bridge';
 import { joinClassNames } from '@frontify/guideline-blocks-settings';
-import { Dispatch, SetStateAction, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ALLOWED_EXTENSIONS, alignmentClasses } from '../constants';
 import { IMAGE_ID, Settings } from '../settings';
 import Image from './Image';
@@ -18,16 +18,15 @@ import ImageEditor from './ImageEditor';
 
 type Props = {
     appBridge: AppBridgeBlock;
-    isLoading: boolean;
-    setIsLoading: Dispatch<SetStateAction<boolean>>;
 };
 
-const ImageWrapper = ({ appBridge, isLoading, setIsLoading }: Props) => {
+const ImageWrapper = ({ appBridge }: Props) => {
     const { openAssetChooser, closeAssetChooser } = useAssetChooser(appBridge);
     const { blockAssets, deleteAssetIdsFromKey, updateAssetIdsFromKey } = useBlockAssets(appBridge);
     const [blockSettings] = useBlockSettings<Settings>(appBridge);
     const { alignment } = blockSettings;
     const isEditing = useEditorState(appBridge);
+    const [isLoading, setIsLoading] = useState(false);
     const image = blockAssets?.[IMAGE_ID]?.[0];
 
     const [openFileDialog, { selectedFiles }] = useFileInput({

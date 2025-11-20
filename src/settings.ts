@@ -5,12 +5,14 @@ import {
     Alignment,
     AnimationSpeed,
     AnimationStagger,
+    Direction,
     Orientation,
     Padding,
     Ratio,
 } from './constants';
 
 const ALIGNMENT_ID = 'alignment';
+const DIRECTION_ID = 'direction';
 const PADDING_CHOICE_ID = 'paddingChoice';
 const RATIO_ID = 'ratio';
 const SPEED_ID = 'animationSpeed';
@@ -21,6 +23,7 @@ export type Settings = {
     alignment: (typeof Alignment)[keyof typeof Alignment];
     animationSpeed: (typeof AnimationSpeed)[keyof typeof AnimationSpeed];
     animationStaggering: (typeof AnimationStagger)[keyof typeof AnimationStagger];
+    direction: (typeof Direction)[keyof typeof Direction];
     paddingChoice: (typeof Padding)[keyof typeof Padding];
     orientation: (typeof Orientation)[keyof typeof Orientation];
     ratio: (typeof Ratio)[keyof typeof Ratio];
@@ -41,9 +44,19 @@ export const settings = defineSettings({
                     label: 'Text / Image',
                 },
                 {
+                    value: Orientation.TextOnly,
+                    icon: IconEnum.TextAlignmentLeft,
+                    label: 'Text',
+                },
+                {
                     value: Orientation.ImageText,
                     icon: IconEnum.MediaObjectTextRight,
                     label: 'Image / Text',
+                },
+                {
+                    value: Orientation.ImageOnly,
+                    icon: IconEnum.Image,
+                    label: 'Image',
                 },
             ],
         },
@@ -66,10 +79,27 @@ export const settings = defineSettings({
     ],
     layout: [
         {
+            id: DIRECTION_ID,
+            label: 'Direction',
+            type: 'segmentedControls',
+            defaultValue: Direction.Horizontal,
+            choices: [
+                {
+                    icon: IconEnum.MediaObjectTextLeft,
+                    value: Direction.Horizontal,
+                },
+                {
+                    icon: IconEnum.MediaObjectTextTop,
+                    value: Direction.Vertical,
+                },
+            ],
+        },
+        {
             id: RATIO_ID,
             label: 'Ratio',
             type: 'segmentedControls',
             defaultValue: Ratio.Ratio1To1,
+            show: (bundle) => bundle.getBlock(DIRECTION_ID)?.value === Direction.Horizontal,
             choices: [
                 {
                     value: Ratio.Ratio2To1,

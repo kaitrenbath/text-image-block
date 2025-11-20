@@ -1,116 +1,104 @@
 import { BlockProps, RichTextEditor, joinClassNames } from '@frontify/guideline-blocks-settings';
 import { useBlockSettings, useEditorState } from '@frontify/app-bridge';
-import { motion } from 'framer-motion';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { motion } from 'motion/react';
+import { useCallback, useMemo, useRef } from 'react';
 
-import { Orientation, PLACEHOLDER } from './constants';
+import { Direction, Orientation, PLACEHOLDER } from './constants';
 import { getPlugins } from './helpers';
 import { Settings } from './settings';
 import { ImageWrapper } from './components';
 
 export const TextImageBlock = ({ appBridge }: BlockProps) => {
     const [blockSettings, setBlockSettings] = useBlockSettings<Settings>(appBridge);
-    const { animationSpeed, animationStaggering, content, paddingChoice, orientation, ratio } = blockSettings;
-    const containerRef = useRef(null);
     const isEditing = useEditorState(appBridge);
     const plugins = useMemo(() => getPlugins(appBridge), [appBridge]);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [isInView, setIsInView] = useState(false);
+    const textRef = useRef(null);
+    const imageRef = useRef(null);
+    const { animationSpeed, animationStaggering, content, direction, paddingChoice, orientation, ratio } =
+        blockSettings;
+    const blockId = String(appBridge.context('blockId').get());
+    const shouldAnimate = !isEditing;
 
     const updateContent = useCallback((content: string) => setBlockSettings({ content }), [setBlockSettings]);
 
-    const shouldAnimate = !isLoading && isInView ? 'show' : 'hidden';
-    const container = {
-        hidden: {
-            transition: {
-                type: false,
-            },
-        },
-        show: {
-            transition: {
-                staggerChildren: animationStaggering,
-                staggerDirection: orientation === Orientation.TextImage ? 1 : -1,
-            },
-        },
-    };
-    const column = {
-        hidden: {
-            opacity: 0,
-            y: 30,
-        },
-        show: {
-            opacity: 1,
-            y: 0,
-            transition: {
-                duration: animationSpeed,
-            },
-        },
+    const TextSection = () => {
+        return (
+            <motion.div
+                ref={textRef}
+                initial={shouldAnimate ? { opacity: 0, y: 20 } : false}
+                whileInView={shouldAnimate ? { opacity: 1, y: 0 } : undefined}
+                transition={{
+                    duration: animationSpeed,
+                    delay: Orientation.ImageText === orientation ? animationStaggering : 0,
+                }}
+                viewport={{ once: true, amount: 'some', margin: '0px 0px -30% 0px' }}
+            >
+                <RichTextEditor
+                    id={`animated-text-${blockId}`}
+                    isEditing={isEditing}
+                    placeholder={PLACEHOLDER}
+                    plugins={plugins}
+                    value={content}
+                    onTextChange={updateContent}
+                />
+            </motion.div>
+        );
     };
 
-    useEffect(() => {
-        const { current } = containerRef;
-        const onIntersect = ([entry]: IntersectionObserverEntry[], observer: IntersectionObserver) => {
-            setTimeout(() => {
-                if (entry.isIntersecting) {
-                    setIsInView(true);
-                    observer.unobserve(entry.target);
-                }
-            }, 200);
-        };
-        const observer = new IntersectionObserver(onIntersect, { root: null, rootMargin: '0px', threshold: 1.0 });
-
-        if (current && !isLoading) {
-            observer.observe(current);
-        }
-
-        return () => {
-            if (current) {
-                observer.disconnect();
-            }
-        };
-    }, [containerRef, isLoading]);
+    const ImageSection = () => {
+        return (
+            <motion.div
+                ref={imageRef}
+                initial={shouldAnimate ? { opacity: 0, y: 20 } : false}
+                whileInView={shouldAnimate ? { opacity: 1, y: 0 } : undefined}
+                transition={{
+                    duration: animationSpeed,
+                    delay: Orientation.TextImage === orientation ? animationStaggering : 0,
+                }}
+                viewport={{ once: true, amount: 'some', margin: '0px 0px -30% 0px' }}
+                className="tw-h-full"
+            >
+                <ImageWrapper appBridge={appBridge} />
+            </motion.div>
+        );
+    };
 
     return (
-        <div id={appBridge.context('blockId').get().toString()} className="text-image-block">
-            <motion.div
-                variants={container}
-                initial={isEditing ? 'show' : 'hidden'}
-                animate={isEditing ? 'show' : shouldAnimate}
-                ref={containerRef}
+        <div id={blockId} className="text-image-block">
+            <div
                 className={joinClassNames([
-                    'tw-flex tw-gap-x-4 tw-gap-y-6',
-                    orientation === Orientation.TextImage
-                        ? 'tw-flex-col md:tw-flex-row'
-                        : 'tw-flex-col-reverse md:tw-flex-row-reverse',
+                    'tw-flex tw-flex-col tw-gap-x-4 tw-gap-y-6',
+                    direction === Direction.Horizontal ? 'tw-flex-col md:tw-flex-row' : 'tw-flex-col',
                 ])}
             >
-                <motion.div
+                <div
                     className="tw-w-full tw-flex-1"
-                    variants={column}
                     style={{
                         paddingLeft: paddingChoice,
                         paddingRight: paddingChoice,
                     }}
                 >
-                    <RichTextEditor
-                        isEditing={isEditing}
-                        placeholder={PLACEHOLDER}
-                        plugins={plugins}
-                        value={content}
-                        onTextChange={updateContent}
-                    />
-                </motion.div>
-                <motion.div
-                    variants={column}
-                    className={ratio}
-                    style={{
-                        paddingLeft: paddingChoice,
-                        paddingRight: paddingChoice,
-                    }}
-                >
-                    <ImageWrapper appBridge={appBridge} isLoading={isLoading} setIsLoading={setIsLoading} />
-                </motion.div>
-            </motion.div>
+                    {orientation === Orientation.TextImage || orientation === Orientation.TextOnly ? (
+                        <TextSection />
+                    ) : (
+                        <ImageSection />
+                    )}
+                </div>
+                {(orientation === Orientation.TextImage || orientation === Orientation.ImageText) && (
+                    <div
+                        className={joinClassNames([
+                            'tw-w-full',
+                            direction === Direction.Horizontal ? ratio : undefined,
+                        ])}
+                        style={{
+                            paddingLeft: paddingChoice,
+                            paddingRight: paddingChoice,
+                        }}
+                    >
+                        {orientation === Orientation.TextImage ? <ImageSection /> : <TextSection />}
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
