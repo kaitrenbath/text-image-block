@@ -41,9 +41,19 @@ export const settings = defineSettings({
                     label: 'Text / Image',
                 },
                 {
+                    value: Orientation.TextOnly,
+                    icon: IconEnum.TextAlignmentLeft,
+                    label: 'Text',
+                },
+                {
                     value: Orientation.ImageText,
                     icon: IconEnum.MediaObjectTextRight,
                     label: 'Image / Text',
+                },
+                {
+                    value: Orientation.ImageOnly,
+                    icon: IconEnum.Image,
+                    label: 'Image',
                 },
             ],
         },

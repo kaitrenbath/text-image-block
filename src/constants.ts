@@ -30,7 +30,9 @@ export const AnimationSpeed = {
 
 export const Orientation = {
     TextImage: 'text_image',
+    TextOnly: 'text',
     ImageText: 'image_text',
+    ImageOnly: 'image',
 } as const;
 
 export const Padding = {
@@ -41,7 +43,7 @@ export const Padding = {
 } as const;
 
 export const Ratio = {
-    Ratio2To1: 'tw-w-full md:!tw-w-2/3',
-    Ratio1To1: 'tw-w-full md:!tw-w-1/2',
-    Ratio1To2: 'tw-w-full md:!tw-w-1/3',
+    Ratio2To1: 'md:!tw-w-2/3',
+    Ratio1To1: 'md:!tw-w-1/2',
+    Ratio1To2: 'md:!tw-w-1/3',
 } as const;
